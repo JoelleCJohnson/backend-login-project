@@ -1,14 +1,15 @@
 import express from 'express'
 import cors from 'cors'
-import { signUp, logIn } from './login.js'
+import { signUp, logIn, getAllUsers } from './login.js'
 
 const app = express()
 
 app.use(cors())
 app.use(express.json())
 
+app.get("/", getAllUsers)
 app.post("/", signUp)
-app.post("/login", logIn)
+app.post("/", logIn)
 
 
 app.listen(8080, () => {

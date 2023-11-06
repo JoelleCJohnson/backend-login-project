@@ -6,21 +6,19 @@ export async function signUp(req, res) {
     const { email, password } = body
     const client = await connectDb()
 
-    const allUsers = await client.query(`SELECT * FROM users 
+    const oneUser = await client.query(`SELECT * FROM users 
     WHERE (id = '${email}' AND password = '${password}');`)
 
-    console.log(allUsers)
+    console.log(oneUser)
 
-    allUsers.length === 0 ?
-
+    if(oneUser.length === 0) {
         await client.query(`INSERT INTO users (id, password)
                             VALUES ('${email}', '${password}')`)
-        :
-        console.log('An account already exists with this email. Please log in or sign up with a different eamil.')
-
+        res.status(204).send(oneUser)
+    } else {
+        res.send({ message: "User already exists"})
+    }
         disconnect(client)
-
-    res.status(201).send({ message: 'sent' })
 }
 
 export async function logIn(req, res) {
@@ -29,5 +27,12 @@ export async function logIn(req, res) {
     const user = await client.query(`SELECT * FROM users 
     WHERE (id = '${email}' AND password = '${password}');`)
     disconnect(client)
-    res.status(200).send('Logged in')
+    res.status(200).send({ message: "Logged in" })
+}
+
+export async function getAllUsers(req, res) {
+    const client = await connectDb()
+    const allUsers = await client.query(`SELECT * FROM users;`)
+    disconnect(client)
+    res.send(allUsers)
 }
