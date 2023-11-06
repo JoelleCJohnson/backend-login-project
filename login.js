@@ -33,6 +33,7 @@ export async function logIn(req, res) {
 export async function getAllUsers(req, res) {
     const client = await connectDb()
     const allUsers = await client.query(`SELECT * FROM users;`)
+    console.log(allUsers)
     disconnect(client)
     res.send(allUsers)
 }
